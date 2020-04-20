@@ -23,7 +23,9 @@ jobs:
       id: rpm
       uses: naveenrajm7/rpmbuild@master
       with:
-        spec_file: ".rpm/rust_packaging_example.spec"
+        # TODO fix bug in the action here
+        #spec_file: ".rpm/rust_packaging_example.spec"
+        spec_file: "rust_packaging_example.spec"
 
     - name: Print output
       run: echo ${{steps.rpm.outputs.source_rpm_path}}
