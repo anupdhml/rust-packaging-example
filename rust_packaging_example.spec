@@ -4,8 +4,8 @@
 
 Name: rust_packaging_example
 Summary: Example rust program used for generating packages (rpm, deb, etc.)
-Version: @@VERSION@@
-Release: @@RELEASE@@
+Version: 1.0.0
+Release: 1%{?dist}
 License: ASL 2.0
 Group: Applications/System
 Source0: %{name}-%{version}.tar.gz
