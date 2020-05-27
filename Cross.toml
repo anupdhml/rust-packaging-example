@@ -1,0 +1,41 @@
+# Configuration for cross (https://github.com/rust-embedded/cross),
+# for easy cross compilation and testing
+
+# useful to pass these environment variables into the build environment from
+# the calling shell
+[build.env]
+passthrough = [
+    "RUST_BACKTRACE",
+    "RUST_LOG",
+    "RUSTFLAGS",
+]
+
+# for the targets below, override cross's default images with our own, since our
+# dependencies like snmalloc do not build successfuly there currently. So we
+# bring our own images with all the setup done for working builds.
+
+[target.x86_64-unknown-linux-musl]
+#
+# has very old ubuntu and causes multiple build issues. stay away
+#image = "clux/muslrust:latest"
+#
+# has recent-ish ubuntu  but does not have static libs needed for final snmalloc
+# linking (libatomic and libstdc++)
+#image = "ekidd/rust-musl-builder:stable"
+#
+# has latest musl-cross-make (needed for snmalloc to compile)
+# fails currently on final linking even with modified snmalloc build script to
+# find static version of libatomic and libstdc++
+image = "anupdhml/example-builder:x86_64-unknown-linux-musl"
+
+# cross here is expected to be installed via:
+#   cargo install --git https://github.com/anupdhml/cross.git --branch custom_target_fixes
+# has fixes for this custom target to work
+[target.x86_64-alpine-linux-musl]
+# TODO see if we can make this work without setting this
+xargo = false
+#xargo = true
+image = "anupdhml/example-builder:x86_64-alpine-linux-musl"
+
+[target.x86_64-unknown-linux-gnu]
+image = "anupdhml/example-builder:x86_64-unknown-linux-gnu"

@@ -1,0 +1,48 @@
+# build via:
+#   docker build --network host -t anupdhml/example-builder:x86_64-unknown-linux-musl --build-arg RUST_VERSION=1.43.1 -f ./Dockerfile.x86_64-unknown-linux-musl .
+
+# latest stable version as of May 22, 2020
+#ARG RUST_VERSION="1.43.1"
+ARG RUST_VERSION
+
+# via https://hub.docker.com/_/rust
+FROM rust:${RUST_VERSION}-buster
+
+# install musl
+# this setup borrowed from https://github.com/rust-embedded/cross/blob/v0.2.0/docker/musl.sh#L44
+# not using cross's default image there directly since that has older gcc (6.4)
+# which does not work for our dependencies like snmalloc
+RUN temp_dir=$(mktemp -d) \
+  && cd $temp_dir \
+  && curl -L https://github.com/richfelker/musl-cross-make/archive/v0.9.9.tar.gz | tar --strip-components=1 -xz \
+  && make install -j$(nproc) \
+    GCC_VER=9.2.0 \
+    MUSL_VER=1.2.0 \
+    DL_CMD="curl -C - -L -o" \
+    OUTPUT=/usr/local/ \
+    TARGET=x86_64-linux-musl \
+  && rm -rf $temp_dir
+
+ENV CARGO_TARGET_X86_64_UNKNOWN_LINUX_MUSL_LINKER=x86_64-linux-musl-gcc \
+    CC_x86_64_unknown_linux_musl=x86_64-linux-musl-gcc \
+    CXX_x86_64_unknown_linux_musl=x86_64-linux-musl-g++
+
+# TODO base this image on vanilla ubuntu (or debian) and install rust like this
+# we may not need to do this with cross actually, since cross shares cargo/rustc from host
+#
+# for ref: https://github.com/rust-lang/docker-rust/blob/master/1.43.1/buster/Dockerfile#
+#RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs -o rustup-init.sh \
+#    #&& sh rustup-init.sh -y --no-modify-path \
+#    && sh rustup-init.sh -y \
+#    && rm rustup-init.sh
+#
+#ENV PATH="/root/.cargo/bin:${PATH}"
+#
+#RUN rustup target add x86_64-unknown-linux-musl
+
+# even from cross, this rustc is picked up so need to add this target
+# even if the host already has this
+RUN rustup target add x86_64-unknown-linux-musl
+
+COPY shared/install_dependencies_debian.sh /
+RUN /install_dependencies_debian.sh

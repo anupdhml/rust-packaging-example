@@ -1,0 +1,55 @@
+# build via:
+#   docker build --network host -t anupdhml/example-builder:x86_64-alpine-linux-musl --build-arg RUST_VERSION=1.43.1 -f ./Dockerfile.x86_64-alpine-linux-musl .
+
+# edge enables us to use latest rustc
+# (latest image has older rustc which does not work for some of our dependencies
+# installing rust from edge also does not work in the latest image, without upgrading
+# the whole system).
+# FROM alpine:edge
+# or use a date tag, via https://hub.docker.com/_/alpine
+# TODO after we have alpine > 3.11, switch to it?
+#FROM alpine:20200428
+
+#FROM alpine:latest
+FROM alpine:3.11.6
+
+RUN apk add --update-cache \
+    # basics
+    #rust cargo \
+    # dependencies for C builds
+    # TODO maybe just install build-base here
+    cmake make g++ \
+    # for mimalloc
+    linux-headers
+    # TODO remove. for use later
+    # for grok (via onig-sys)
+    #clang \
+    # for openssl (via surf). static package needed for the final linking
+    #openssl-dev openssl-libs-static \
+
+# latest stable version as of May 22, 2020
+#ARG RUST_VERSION="1.43.1"
+ARG RUST_VERSION
+# install latest patched rust from edge
+# https://pkgs.alpinelinux.org/packages?name=rust&branch=edge&arch=x86_64
+RUN apk add --update-cache \
+    --repository http://dl-cdn.alpinelinux.org/alpine/edge/community \
+    --repository http://dl-cdn.alpinelinux.org/alpine/edge/main \
+    # https://git.alpinelinux.org/apk-tools/commit/?id=693b4bcdb0f22904a521a7c8ac4f13e697dc4d71
+    "cargo=~${RUST_VERSION}"
+    # https://gitlab.alpinelinux.org/alpine/abuild/-/issues/9996
+    #"cargo>=${RUST_VERSION}"
+    #'cargo>=1.43.1'
+    #rust cargo
+
+# only alpine's patched rustc has worked for succesful snmalloc musl builds
+# so installing latest rust this way does not quite work
+#
+#RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs -o rustup-init.sh \
+#    #&& sh rustup-init.sh -y --no-modify-path \
+#    && sh rustup-init.sh -y \
+#    && rm rustup-init.sh
+#
+#ENV PATH="/root/.cargo/bin:${PATH}"
+#
+#RUN rustup target add x86_64-unknown-linux-musl
