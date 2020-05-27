@@ -26,7 +26,7 @@ passthrough = [
 # has latest musl-cross-make (needed for snmalloc to compile)
 # fails currently on final linking even with modified snmalloc build script to
 # find static version of libatomic and libstdc++
-image = "anupdhml/example-builder:x86_64-unknown-linux-musl"
+image = "anupdhml/example-builder-rust:x86_64-unknown-linux-musl"
 
 # cross here is expected to be installed via:
 #   cargo install --git https://github.com/anupdhml/cross.git --branch custom_target_fixes
@@ -35,7 +35,7 @@ image = "anupdhml/example-builder:x86_64-unknown-linux-musl"
 # TODO see if we can make this work without setting this
 xargo = false
 #xargo = true
-image = "anupdhml/example-builder:x86_64-alpine-linux-musl"
+image = "anupdhml/example-builder-rust:x86_64-alpine-linux-musl"
 
 [target.x86_64-unknown-linux-gnu]
-image = "anupdhml/example-builder:x86_64-unknown-linux-gnu"
+image = "anupdhml/example-builder-rust:x86_64-unknown-linux-gnu"
