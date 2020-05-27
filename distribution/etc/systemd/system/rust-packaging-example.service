@@ -1,0 +1,12 @@
+[Unit]
+Description=Rust Packaging Example
+Documentation=https://github.com/anupdhml/rust-packaging-example
+
+[Service]
+User=rust
+Group=rust
+ExecStart=/usr/bin/rust-packaging-example
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
