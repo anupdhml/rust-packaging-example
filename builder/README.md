@@ -9,7 +9,7 @@ If you are changing any of the files here, you will need to rebuild and push the
 ./build_image.sh x86_64-unknown-linux-gnu
 
 # push the image
-docker push anupdhml/example-builder:x86_64-unknown-linux-gnu
+docker push anupdhml/example-builder-rust:x86_64-unknown-linux-gnu
 ```
 
 The images are provisoned with the rust version specified in the project [rust-toolchain](../rust-toolchain) file, so the above instructions apply for when we bump the versions there too.

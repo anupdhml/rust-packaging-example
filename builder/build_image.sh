@@ -28,7 +28,7 @@ if [ ! -f "$DOCKERFILE" ]; then
 fi
 
 IMAGE_NAMESPACE="anupdhml"
-IMAGE_NAME="example-builder"
+IMAGE_NAME="example-builder-rust"
 
 RUST_TOOLCHAIN_FILE="../rust-toolchain"
 RUST_VERSION=$(<"$RUST_TOOLCHAIN_FILE")
