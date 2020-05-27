@@ -1,15 +1,32 @@
 [package]
-name = "rust_packaging_example"
+name = "rust-packaging-example"
 version = "0.1.0"
-description = "Example rust program used for generating packages (rpm, deb, etc.)"
+description = "Example rust program for packaging demo purposes"
 authors = ["Anup Dhamala <anupdhml+git@gmail.com>"]
 edition = "2018"
 license = "Apache-2.0"
 
 [dependencies]
 
+# un-comment for local testing
+#snmalloc-rs = { path = "snmalloc-rs", optional = true }
+#snmalloc-rs = { git = "https://github.com/SchrodingerZhu/snmalloc-rs.git" , optional = true }
+snmalloc-rs = { version = "0.2", optional = true }
+
+mimalloc = { version = "0.1", default-features = false, optional = true }
+
+jemallocator = { version = "0.3", optional = true }
+
+[features]
+default = ["allocator-snmalloc"]
+#default = ["allocator-mimalloc"]
+#default = ["allocator-jemalloc"]
+allocator-snmalloc = ["snmalloc-rs"]
+allocator-mimalloc = ["mimalloc"]
+allocator-jemalloc = ["jemallocator"]
+
 [package.metadata.rpm.cargo]
 buildflags = ["--release"]
 
 [package.metadata.rpm.targets]
-rust_packaging_example = { path = "/usr/bin/rust_packaging_example" }
+rust-packaging-example = { path = "/usr/bin/rust-packaging-example" }
