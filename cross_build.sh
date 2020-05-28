@@ -4,6 +4,9 @@
 #
 # Build rust project for various targets
 #
+# Meant for use during the final release as part of CI, but can be used for
+# local testing too
+#
 # Usage: build.sh TARGET
 # Example: build.sh x86_64-unknown-linux-gnu
 
@@ -32,20 +35,6 @@ BIN_NAME="rust-packaging-example"
 
 echo "Building for target: ${TARGET}..."
 
-BUILD_ARGS=("--target" "$TARGET")
-if [ "$BUILD_MODE" == "release" ]; then
-  BUILD_ARGS+=("--release")
-fi
-
-if [[ "$TARGET" == *"alpine-linux-musl"* ]]; then
-  # force static binaries for alpine-linux-musl targets (since we are choosing this
-  # target specifically to produce working static musl binaries). Static building
-  # is the default rustc behavior for musl targets, but alpine disables it by
-  # default (via patches to rust).
-  echo "Ensuring static builds for alpine-linux-musl targets..."
-  export RUSTFLAGS="${RUSTFLAGS} -C target-feature=+crt-static"
-fi
-
 # install cross if not already there (helps us build easily across various targets)
 # see https://github.com/rust-embedded/cross
 #
@@ -55,6 +44,33 @@ if ! command -v cross > /dev/null; then
   echo "Installing cross..."
   cargo install --git https://github.com/anupdhml/cross.git --branch custom_target_fixes
 fi
+
+BUILD_ARGS=("--target" "$TARGET")
+CUSTOM_RUSTFLAGS=()
+
+if [ "$BUILD_MODE" == "release" ]; then
+  BUILD_ARGS+=("--release")
+
+  # for stripping binaries (saving on size, plus minor performance gains)
+  # via https://github.com/rust-lang/cargo/issues/3483#issuecomment-431209957
+  #
+  # TODO once https://github.com/rust-lang/cargo/issues/3483#issuecomment-631395566
+  # lands on a stable rust release, switch to using that
+  echo "Ensuring release binaries are stripped..."
+  CUSTOM_RUSTFLAGS+=("-C" "link-arg=-s")
+fi
+
+if [[ "$TARGET" == *"alpine-linux-musl"* ]]; then
+  # force static binaries for alpine-linux-musl targets (since we are choosing this
+  # target specifically to produce working static musl binaries). Static building
+  # is the default rustc behavior for musl targets, but alpine disables it by
+  # default (via patches to rust).
+  echo "Ensuring static builds for alpine-linux-musl targets..."
+  CUSTOM_RUSTFLAGS+=("-C" "target-feature=+crt-static")
+fi
+
+export RUSTFLAGS="${RUSTFLAGS} ${CUSTOM_RUSTFLAGS[@]}"
+echo "RUSTFLAGS set to: ${RUSTFLAGS}"
 
 cross build "${BUILD_ARGS[@]}"
 

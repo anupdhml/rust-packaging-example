@@ -4,6 +4,9 @@
 #
 # Package rust project for various targets, across different formats
 #
+# Meant for use during the final release as part of CI, but can be used for
+# local testing too
+#
 # Supported package formats:
 #   * tar.gz
 #
