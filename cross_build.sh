@@ -37,6 +37,15 @@ if [ "$BUILD_MODE" == "release" ]; then
   BUILD_ARGS+=("--release")
 fi
 
+if [[ "$TARGET" == *"alpine-linux-musl"* ]]; then
+  # force static binaries for alpine-linux-musl targets (since we are choosing this
+  # target specifically to produce working static musl binaries). Static building
+  # is the default rustc behavior for musl targets, but alpine disables it by
+  # default (via patches to rust).
+  echo "Ensuring static builds for alpine-linux-musl targets..."
+  export RUSTFLAGS="${RUSTFLAGS} -C target-feature=+crt-static"
+fi
+
 # install cross if not already there (helps us build easily across various targets)
 # see https://github.com/rust-embedded/cross
 #
@@ -47,7 +56,6 @@ if ! command -v cross > /dev/null; then
   cargo install --git https://github.com/anupdhml/cross.git --branch custom_target_fixes
 fi
 
-# TODO enable at the end?
 cross build "${BUILD_ARGS[@]}"
 
 # check
