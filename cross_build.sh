@@ -2,10 +2,10 @@
 #
 # build.sh
 #
-# Build rust project for various targets and generate archive for distribution
+# Build rust project for various targets
 #
-# Usage: build.sh TARGET [VERSION]
-# Example: build.sh x86_64-unknown-linux-gnu 0.8.0
+# Usage: build.sh TARGET
+# Example: build.sh x86_64-unknown-linux-gnu
 
 # exit the script when a command fails
 set -o errexit
@@ -58,48 +58,11 @@ fi
 
 cross build "${BUILD_ARGS[@]}"
 
-# check
+TARGET_BIN="target/${TARGET}/${BUILD_MODE}/${BIN_NAME}"
 
-TARGET_BUILD_DIR="target/${TARGET}/${BUILD_MODE}"
-TARGET_BIN="$TARGET_BUILD_DIR/${BIN_NAME}"
+echo "Successfully built the binary: ${TARGET_BIN}"
 
+# linking check
 echo "Printing linking information for the binary..."
 file "$TARGET_BIN"
 ldd "$TARGET_BIN"
-
-###############################################################################
-
-echo "Packaging for target: ${TARGET}"
-
-LATEST_COMMIT_HASH=$(git rev-parse --short HEAD)
-
-# if no version argument is provided to the script, use latest commit hash
-# TODO document this in script usage
-VERSION=${2-${LATEST_COMMIT_HASH}}
-
-ARCHIVE_NAME="${BIN_NAME}-${VERSION}-${TARGET}"
-TEMP_ARCHIVE_DIR="${TARGET_BUILD_DIR}/${ARCHIVE_NAME}"
-
-if [ -d "${TEMP_ARCHIVE_DIR}" ]; then
-  echo "Temporary archive directory ${TEMP_ARCHIVE_DIR} already exists. Removing it first"
-  rm -rfv "$TEMP_ARCHIVE_DIR"
-fi
-mkdir -p "$TEMP_ARCHIVE_DIR"
-
-echo "Copying files to temporary archive directory: ${TEMP_ARCHIVE_DIR}"
-
-# main binary
-mkdir -p "$TEMP_ARCHIVE_DIR/bin"
-cp -v "$TARGET_BIN" "${TEMP_ARCHIVE_DIR}/bin"
-
-# support files
-cp -v README.md LICENSE "${TEMP_ARCHIVE_DIR}/"
-cp -vR distribution/etc/ "${TEMP_ARCHIVE_DIR}/"
-
-echo "Creating archive file with name: ${ARCHIVE_NAME}"
-tar cvzf "${ARCHIVE_NAME}.tar.gz" -C "$TARGET_BUILD_DIR" "$ARCHIVE_NAME"
-
-# final cleanup
-rm -rf "$TEMP_ARCHIVE_DIR"
-
-echo "Done!"
