@@ -31,7 +31,7 @@ function package_archive {
   cp -v README.md LICENSE "${temp_archive_dir}/"
   cp -vR distribution/etc/ "${temp_archive_dir}/"
 
-  echo "Creating package file: ${archive_file}"
+  echo "Creating archive file: ${archive_file}"
   tar cvzf $archive_file -C "$TARGET_BUILD_DIR" "$archive_name"
 
   # final cleanup
@@ -46,7 +46,7 @@ function package_archive {
   #echo "Package content:"
   #tar --gzip --list --verbose --file="$archive_file"
 
-  echo "Successfully built the package: ${archive_file}"
+  echo "Successfully built the archive file: ${archive_file}"
 }
 
 
@@ -58,10 +58,14 @@ function package_deb {
     cargo install cargo-deb
   fi
 
-  echo "Creating package file in directory: ${PACKAGES_DIR}"
+  echo "Creating deb file in directory: ${PACKAGES_DIR}"
   # attempt to get the deb file name, but this suppresses error output too
-  #local deb_file=$(cargo deb --no-build --output "$PACKAGES_DIR" --deb-version "$VERSION" --target "$TARGET" | tail -n1)
-  cargo deb --verbose --no-build --output "$PACKAGES_DIR" --deb-version "$VERSION" --target "$TARGET"
+  #local deb_file=$(cargo deb --no-build --no-strip --output "$PACKAGES_DIR" --deb-version "$VERSION" --target "$TARGET" | tail -n1)
+  # we control stripping as part of the build process separately so don't do it here
+  cargo deb --verbose --no-build --no-strip \
+    --output "$PACKAGES_DIR" \
+    --deb-version "$VERSION" \
+    --target "$TARGET"
 
   # final cleanup. directory created by cargo-deb
   rm -rfv target/${TARGET}/debian
@@ -74,6 +78,6 @@ function package_deb {
   #echo "Package contents:"
   #dpkg --contents "$deb_file"
 
-  #echo "Successfully built the package: ${deb_file}"
-  echo "Successfully built the package."
+  #echo "Successfully built the deb file: ${deb_file}"
+  echo "Successfully built the deb file"
 }

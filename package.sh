@@ -3,7 +3,7 @@
 # package.sh
 #
 # Package rust project for various targets, across different formats
-# Supported formats: tar.gz, deb
+# Supported formats: archive(tar.gz currently), deb
 #
 # Meant for use during the final release as part of CI, but can be used for
 # local testing too.
@@ -59,6 +59,8 @@ mkdir -p "$PACKAGES_DIR"
 
 # TODO generate man pages and also add them for packaging
 
+echo ""
+
 ###############################################################################
 
 # include functions from this file
@@ -68,3 +70,5 @@ source "distribution/packaging_functions.sh"
 package_archive
 echo ""
 package_deb
+echo ""
+echo "All was well."
