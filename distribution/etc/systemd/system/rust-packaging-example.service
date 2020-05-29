@@ -6,7 +6,8 @@ Documentation=https://github.com/anupdhml/rust-packaging-example
 User=rust
 Group=rust
 ExecStart=/usr/bin/rust-packaging-example
-Restart=always
+# good to enable this if the app is a long-running daemon
+#Restart=always
 
 [Install]
 WantedBy=multi-user.target

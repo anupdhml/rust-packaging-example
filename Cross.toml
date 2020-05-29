@@ -10,9 +10,11 @@ passthrough = [
     "RUSTFLAGS",
 ]
 
-# for the targets below, override cross's default images with our own, since our
+# For the targets below, override cross's default images with our own, since our
 # dependencies like snmalloc do not build successfuly there currently. So we
 # bring our own images with all the setup done for working builds.
+#
+# For details on the image implementation, refer to the contents of builder directory.
 
 [target.x86_64-unknown-linux-musl]
 #

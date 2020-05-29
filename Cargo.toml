@@ -5,6 +5,10 @@ description = "Example rust program for packaging demo purposes"
 authors = ["Anup Dhamala <anupdhml+git@gmail.com>"]
 edition = "2018"
 license = "Apache-2.0"
+readme = "README.md"
+homepage = "https://github.com/anupdhml/rust-packaging-example"
+documentation = "https://github.com/anupdhml/rust-packaging-example"
+repository = "https://github.com/anupdhml/rust-packaging-example"
 
 [dependencies]
 
@@ -25,8 +29,39 @@ allocator-snmalloc = ["snmalloc-rs"]
 allocator-mimalloc = ["mimalloc"]
 allocator-jemalloc = ["jemallocator"]
 
+# for use during deb packaging, via cargo-deb
+# https://github.com/mmstick/cargo-deb#packagemetadatadeb-options
+[package.metadata.deb]
+name = "rust-packaging-example"
+section = "rust"
+depends = "$auto"
+maintainer-scripts = "distribution/debian/scripts/"
+assets = [
+  # target path will be automatically corrected when cross-compiling
+  ["target/release/rust-packaging-example", "usr/bin/", "755"],
+  ["README.md", "usr/share/doc/rust-packaging-example/", "644"],
+  ["LICENSE", "usr/share/doc/rust-packaging-example/", "644"],
+  # need to specify each directory contents since only actual file entries are allowed here
+  ["distribution/etc/rust-pacakging-example/*", "/etc/rust-packaging-example/", "644"],
+  ["distribution/etc/rust-pacakging-example/config/*", "/etc/rust-packaging-example/config/", "644"],
+  ["distribution/etc/rust-pacakging-example/config/examples/*", "/etc/rust-packaging-example/config/examples/", "644"],
+  ["distribution/etc/systemd/system/*", "/etc/systemd/system/", "644"],
+]
+conf-files = [
+  # these files won't be overwritten when the package is upgraded
+  "/etc/rust-packaging-example/logger.yaml",
+  "/etc/rust-packaging-example/config/main.yaml",
+]
+# TODO generate this automatically as part of deb packaging (from README intro)
+# and place in "extended-description-file"
+extended-description = """\
+Exploration project to determine how to package a rust application for final distribution
+"""
+
+# for use during rpm packaging, via cargo-rpm
+# https://github.com/iqlusioninc/cargo-rpm#
+# TODO decide whether we want to go with cargo-rpm
 [package.metadata.rpm.cargo]
 buildflags = ["--release"]
-
 [package.metadata.rpm.targets]
 rust-packaging-example = { path = "/usr/bin/rust-packaging-example" }

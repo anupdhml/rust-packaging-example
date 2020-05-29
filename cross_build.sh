@@ -40,7 +40,7 @@ echo "Building for target: ${TARGET}..."
 #
 # currently need to install it from a personal fork for builds to work against custom targets
 # (eg: x86_64-alpine-linux-musl which we use for generating working musl binaries right now)
-if ! command -v cross > /dev/null; then
+if ! command -v cross > /dev/null 2>&1; then
   echo "Installing cross..."
   cargo install --git https://github.com/anupdhml/cross.git --branch custom_target_fixes
 fi

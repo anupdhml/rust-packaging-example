@@ -2,8 +2,8 @@
 %define __os_install_post %{_dbpath}/brp-compress
 %define debug_package %{nil}
 
-Name: rust_packaging_example
-Summary: Example rust program used for generating packages (rpm, deb, etc.)
+Name: rust-packaging-example
+Summary: Example rust program for packaging demo purposes
 Version: @@VERSION@@
 Release: @@RELEASE@@
 License: ASL 2.0
