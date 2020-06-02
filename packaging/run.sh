@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# package.sh
+# packaging/run.sh
 #
 # Package rust project for various targets, across different formats
 #
@@ -10,13 +10,13 @@
 # Package version is auto-inferred from the project version specified in the
 # cargo manifest.
 #
-# Usage: package.sh [-h] [-f FORMATS] TARGET
-#   Run `package.sh -h` for more help.
+# Usage: run.sh [-h] [-f FORMATS] TARGET
+#   Run `run.sh -h` for more help.
 #
 # Examples:
-#   package.sh x86_64-unknown-linux-gnu                # produce packages for all supported formats
-#   package.sh -f deb x86_64-unknown-linux-gnu         # package for debian
-#   package.sh -f archive,deb x86_64-unknown-linux-gnu # produce an archive as well as a deb file
+#   run.sh x86_64-unknown-linux-gnu                # produce packages for all supported formats
+#   run.sh -f deb x86_64-unknown-linux-gnu         # package for debian
+#   run.sh -f archive,deb x86_64-unknown-linux-gnu # produce an archive as well as a deb file
 
 # exit the script when a command fails
 set -o errexit

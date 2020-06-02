@@ -29,7 +29,7 @@ builds:
 # eg: archive-x86_64-unknown-linux-gnu
 archive-%: build-%
 	@echo ""
-	./packaging/package.sh -f archive $*
+	./packaging/run.sh -f archive $*
 
 archives:
 	make $(foreach target,$(RELEASE_TARGETS),archive-$(target))
@@ -42,6 +42,6 @@ packages: builds
 	@# 25% slowdown for some of our benchmarks with musl builds. So we stick with
 	@# gnu builds for now.
 	@echo ""
-	./packaging/package.sh -f archive,deb x86_64-unknown-linux-gnu
+	./packaging/run.sh -f archive,deb x86_64-unknown-linux-gnu
 	@echo ""
-	./packaging/package.sh -f archive     x86_64-alpine-linux-musl
+	./packaging/run.sh -f archive     x86_64-alpine-linux-musl

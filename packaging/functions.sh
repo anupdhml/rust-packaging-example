@@ -1,10 +1,10 @@
 #!/bin/bash
 #
-# packaging_functions.sh
+# packaging/functions.sh
 #
 # Collection of functions useful during packaging
 #
-# Meant to be included from the main package.sh script (the variables used
+# Meant to be included from the main packaging/run.sh script (the variables used
 # here are defined there, without which these functions won't really work).
 
 
