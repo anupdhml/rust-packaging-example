@@ -13,6 +13,9 @@
 # Usage: run.sh [-h] [-f FORMATS] TARGET
 #   Run `run.sh -h` for more help.
 #
+# Assumes that the target binary is already built (eg: via cross_build.sh or
+# outside of it).
+#
 # Examples:
 #   run.sh x86_64-unknown-linux-gnu                # produce packages for all supported formats
 #   run.sh -f deb x86_64-unknown-linux-gnu         # package for debian
