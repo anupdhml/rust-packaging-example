@@ -8,6 +8,8 @@
 # local testing too
 #
 # Usage: build.sh TARGET
+#   For supported TARGET values, see Cross.toml in project root.
+#
 # Example: build.sh x86_64-unknown-linux-gnu
 
 # exit the script when a command fails
