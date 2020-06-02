@@ -28,8 +28,8 @@ function package_archive {
   cp -v "$TARGET_BIN" "${temp_archive_dir}/bin"
 
   # support files
-  cp -v README.md LICENSE "${temp_archive_dir}/"
-  cp -vR distribution/etc/ "${temp_archive_dir}/"
+  cp -v "${ROOT_DIR}/README.md" "${ROOT_DIR}/LICENSE" "${temp_archive_dir}/"
+  cp -vR "${ROOT_DIR}/packaging/distribution/etc/" "${temp_archive_dir}/"
 
   echo "Creating archive file: ${archive_file}"
   tar cvzf $archive_file -C "$TARGET_BUILD_DIR" "$archive_name"
@@ -68,7 +68,7 @@ function package_deb {
     --target "$TARGET"
 
   # final cleanup. directory created by cargo-deb
-  rm -rfv target/${TARGET}/debian
+  rm -rfv "${ROOT_DIR}/target/${TARGET}/debian/"
 
   # for debugging
   #

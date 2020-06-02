@@ -42,10 +42,10 @@ assets = [
   ["README.md", "usr/share/doc/rust-packaging-example/", "644"],
   ["LICENSE", "usr/share/doc/rust-packaging-example/", "644"],
   # need to specify each directory contents since only actual file entries are allowed here
-  ["distribution/etc/rust-packaging-example/*", "/etc/rust-packaging-example/", "644"],
-  ["distribution/etc/rust-packaging-example/config/*", "/etc/rust-packaging-example/config/", "644"],
-  ["distribution/etc/rust-packaging-example/config/examples/*", "/etc/rust-packaging-example/config/examples/", "644"],
-  ["distribution/etc/systemd/system/*", "/etc/systemd/system/", "644"],
+  ["packaging/distribution/etc/rust-packaging-example/*", "/etc/rust-packaging-example/", "644"],
+  ["packaging/distribution/etc/rust-packaging-example/config/*", "/etc/rust-packaging-example/config/", "644"],
+  ["packaging/distribution/etc/rust-packaging-example/config/examples/*", "/etc/rust-packaging-example/config/examples/", "644"],
+  ["packaging/distribution/etc/systemd/system/*", "/etc/systemd/system/", "644"],
 ]
 conf-files = [
   # these files won't be overwritten when the package is upgraded

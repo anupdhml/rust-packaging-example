@@ -53,7 +53,6 @@ while getopts hf: opt; do
   esac
 done
 shift "$((OPTIND-1))"
-
 TARGET=$@
 
 if [ -z "$TARGET" ]; then
@@ -66,13 +65,18 @@ if [ -z "$FORMATS" ]; then
   FORMATS="$SUPPORTED_FORMATS"
 fi
 
-echo "Packaging for target: ${TARGET}"
-echo "Output formats: ${FORMATS}"
+BIN_NAME="rust-packaging-example"
+
+ROOT_DIR="$(git rev-parse --show-toplevel)"
+
+echo "Packaging ${BIN_NAME} for target ${TARGET} in ${FORMATS} formats, from ${ROOT_DIR}"
+
+# this move allows us to run this script from anywhere in the repo
+pushd "$ROOT_DIR" > /dev/null
 
 ###############################################################################
 
-BIN_NAME="rust-packaging-example"
-TARGET_BUILD_DIR="target/${TARGET}/release" # we always package for release builds
+TARGET_BUILD_DIR="${ROOT_DIR}/target/${TARGET}/release" # we always package for release builds
 TARGET_BIN="$TARGET_BUILD_DIR/${BIN_NAME}"
 
 # assumes that the build's been done first
@@ -97,7 +101,7 @@ fi
 echo "Determined package version to be: ${VERSION}"
 
 # directory to store the final packaged artifacts
-PACKAGES_DIR="packages"
+PACKAGES_DIR="${ROOT_DIR}/packaging/out"
 mkdir -p "$PACKAGES_DIR"
 
 # TODO generate man pages and also add them for packaging
@@ -105,7 +109,7 @@ mkdir -p "$PACKAGES_DIR"
 ###############################################################################
 
 # include functions from this file
-source "distribution/packaging_functions.sh"
+source "${ROOT_DIR}/packaging/functions.sh"
 
 for format in ${FORMATS//,/ }; do
   echo ""
@@ -127,3 +131,6 @@ done
 
 echo ""
 echo "All was well."
+
+# back to the origin dir, just in case
+popd > /dev/null

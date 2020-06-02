@@ -21,7 +21,7 @@ image:
 # eg: build-x86_64-unknown-linux-gnu
 build-%:
 	@echo ""
-	./cross_build.sh $*
+	./packaging/cross_build.sh $*
 
 builds:
 	make $(foreach target,$(RELEASE_TARGETS),build-$(target))
@@ -29,7 +29,7 @@ builds:
 # eg: archive-x86_64-unknown-linux-gnu
 archive-%: build-%
 	@echo ""
-	./package.sh -f archive $*
+	./packaging/package.sh -f archive $*
 
 archives:
 	make $(foreach target,$(RELEASE_TARGETS),archive-$(target))
@@ -42,6 +42,6 @@ packages: builds
 	@# 25% slowdown for some of our benchmarks with musl builds. So we stick with
 	@# gnu builds for now.
 	@echo ""
-	./package.sh -f archive,deb x86_64-unknown-linux-gnu
+	./packaging/package.sh -f archive,deb x86_64-unknown-linux-gnu
 	@echo ""
-	./package.sh -f archive     x86_64-alpine-linux-musl
+	./packaging/package.sh -f archive     x86_64-alpine-linux-musl

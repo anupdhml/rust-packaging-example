@@ -1,16 +1,16 @@
 #!/bin/bash
 #
-# build.sh
+# cross_build.sh
 #
 # Build rust project for various targets
 #
 # Meant for use during the final release as part of CI, but can be used for
 # local testing too
 #
-# Usage: build.sh TARGET
+# Usage: cross_build.sh TARGET
 #   For supported TARGET values, see Cross.toml in project root.
 #
-# Example: build.sh x86_64-unknown-linux-gnu
+# Example: cross_build.sh x86_64-unknown-linux-gnu
 
 # exit the script when a command fails
 set -o errexit
@@ -19,9 +19,8 @@ set -o errexit
 set -o pipefail
 
 TARGET=$1
-
 if [ -z "$TARGET" ]; then
-  echo "Usage: build.sh TARGET"
+  echo "Usage: ${0##*/} TARGET"
   exit 1
 fi
 
@@ -33,9 +32,14 @@ fi
 
 BIN_NAME="rust-packaging-example"
 
-###############################################################################
+ROOT_DIR="$(git rev-parse --show-toplevel)"
 
-echo "Building for target: ${TARGET}..."
+echo "Building ${BIN_NAME} for target ${TARGET} in ${BUILD_MODE} mode, from ${ROOT_DIR}"
+
+# this move allows us to run this script from anywhere in the repo
+pushd "$ROOT_DIR" > /dev/null
+
+###############################################################################
 
 # install cross if not already there (helps us build easily across various targets)
 # see https://github.com/rust-embedded/cross
@@ -76,7 +80,7 @@ echo "RUSTFLAGS set to: ${RUSTFLAGS}"
 
 cross build "${BUILD_ARGS[@]}"
 
-TARGET_BIN="target/${TARGET}/${BUILD_MODE}/${BIN_NAME}"
+TARGET_BIN="${ROOT_DIR}/target/${TARGET}/${BUILD_MODE}/${BIN_NAME}"
 
 echo "Successfully built the binary: ${TARGET_BIN}"
 
@@ -84,3 +88,6 @@ echo "Successfully built the binary: ${TARGET_BIN}"
 echo "Printing linking information for the binary..."
 file "$TARGET_BIN"
 ldd "$TARGET_BIN"
+
+# back to the origin dir, just in case
+popd > /dev/null
