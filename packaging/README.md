@@ -21,7 +21,7 @@ Note: once we have the builder images successfuly pushed to [docker hub](https:/
 * git
 * cargo
 * docker (to build the builder-images only)
-* dpkg, ldd (optional, to auto-infer dynamic lib dependencies during debian packaging, via [cargo-deb](https://github.com/mmstick/cargo-deb#installation))
+* dpkg, ldd (optionally, to auto-infer dynamic lib dependencies during debian packaging, via [cargo-deb](https://github.com/mmstick/cargo-deb#installation))
 
 Tested successfully from linux (ubuntu) environments, but should work well as long as the above requirements are met.
 
@@ -35,6 +35,6 @@ For the list of targets used during project release, please refer to the [projec
 ## Supported Formats
 
 * archive ([tar.gz](https://en.wikipedia.org/wiki/Tar_(computing)) for linux targets)
-* deb([Debian packages](https://www.debian.org/doc/debian-policy/ch-binary.html))
+* deb ([Debian package](https://www.debian.org/doc/debian-policy/ch-binary.html))
 
 For the list of formats used during project release (variable by target), please refer to the [project Makefile](../Makefile).
