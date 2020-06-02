@@ -3,16 +3,20 @@
 # package.sh
 #
 # Package rust project for various targets, across different formats
-# Supported formats: archive(tar.gz currently), deb
 #
 # Meant for use during the final release as part of CI, but can be used for
-# local testing too.
+# local testing/distribution too.
 #
 # Package version is auto-inferred from the project version specified in the
 # cargo manifest.
 #
-# Usage: package.sh TARGET
-# Example: package.sh x86_64-unknown-linux-gnu
+# Usage: package.sh [-h] [-f FORMATS] TARGET
+#   Run `package.sh -h` for more help.
+#
+# Examples:
+#   package.sh x86_64-unknown-linux-gnu                # produce packages for all supported formats
+#   package.sh -f deb x86_64-unknown-linux-gnu         # package for debian
+#   package.sh -f archive,deb x86_64-unknown-linux-gnu # produce an archive as well as a deb file
 
 # exit the script when a command fails
 set -o errexit
@@ -20,13 +24,52 @@ set -o errexit
 # catch exit status for piped commands
 set -o pipefail
 
-TARGET=$1
+SUPPORTED_FORMATS="archive,deb"
+
+function print_help {
+    cat <<EOF
+Usage: ${0##*/} [-h] [-f FORMATS] TARGET
+  -h         show this help
+  -f FORMATS package format(s). Supported values: ${SUPPORTED_FORMATS}
+             To specify multiple formats, pass a comma-separated string.
+EOF
+}
+
+###############################################################################
+
+while getopts hf: opt; do
+  case $opt in
+    h)
+      print_help
+      exit 0
+      ;;
+    f)
+      FORMATS="$OPTARG"
+      ;;
+    *)
+      print_help
+      exit 1
+      ;;
+  esac
+done
+shift "$((OPTIND-1))"
+
+TARGET=$@
 
 if [ -z "$TARGET" ]; then
-  echo "Usage: package.sh TARGET"
+  print_help
   exit 1
 fi
+
+# defaults to packaging for all supported formats
+if [ -z "$FORMATS" ]; then
+  FORMATS="$SUPPORTED_FORMATS"
+fi
+
 echo "Packaging for target: ${TARGET}"
+echo "Output formats: ${FORMATS}"
+
+###############################################################################
 
 BIN_NAME="rust-packaging-example"
 TARGET_BUILD_DIR="target/${TARGET}/release" # we always package for release builds
@@ -59,16 +102,28 @@ mkdir -p "$PACKAGES_DIR"
 
 # TODO generate man pages and also add them for packaging
 
-echo ""
-
 ###############################################################################
 
 # include functions from this file
 source "distribution/packaging_functions.sh"
 
-# TODO control which one to run via new arg to the script?
-package_archive
-echo ""
-package_deb
+for format in ${FORMATS//,/ }; do
+  echo ""
+  echo "Working on output format: ${format}"
+
+  case $format in
+      archive)
+        package_archive
+        ;;
+      deb)
+        package_deb
+        ;;
+      *)
+        echo "Unknown package format '${format}'"
+        exit 1
+        ;;
+  esac
+done
+
 echo ""
 echo "All was well."

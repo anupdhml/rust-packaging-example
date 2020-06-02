@@ -10,7 +10,7 @@
 
 function package_archive {
   local archive_name="${BIN_NAME}-${VERSION}-${TARGET}"
-  local archive_extension="tar.gz"
+  local archive_extension="tar.gz" # TODO support zip here once we package for windows too
   local archive_file="${PACKAGES_DIR}/${archive_name}.${archive_extension}"
 
   local temp_archive_dir="${TARGET_BUILD_DIR}/${archive_name}"
