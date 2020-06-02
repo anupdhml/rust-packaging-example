@@ -7,16 +7,26 @@ RELEASE_TARGETS := \
 
 help:
 	@echo "This makefile wraps the tasks:"
-	@echo "  image          - build the docker image"
-	@echo "  build-TARGET   - build for the specified TARGET"
-	@echo "  builds         - build for all the release targets"
-	@echo "  archive-TARGET - package release archive for the specified TARGET"
-	@echo "  archives       - package release archive for all the release targets"
-	@echo "  packages       - package (across applicable formats) for all the release targets"
+	@echo "  image                - build the docker image"
+	@echo "  builder-image-TARGET - build the (builder) docker image used for building against the specified TARGET"
+	@echo "  builder-images       - build all the (builder) docker images used for building against the release targets"
+	@echo "  build-TARGET         - build for the specified TARGET"
+	@echo "  builds               - build for all the release targets"
+	@echo "  archive-TARGET       - package release archive for the specified TARGET"
+	@echo "  archives             - package release archive for all the release targets"
+	@echo "  packages             - package (across applicable formats) for all the release targets"
 
 image:
 	# TODO
 	docker-compose build
+
+# eg: builder-image-x86_64-unknown-linux-gnu
+builder-image-%:
+	@echo ""
+	./packaging/builder-images/build_image.sh $*
+
+builder-images:
+	make $(foreach target,$(RELEASE_TARGETS),builder-image-$(target))
 
 # eg: build-x86_64-unknown-linux-gnu
 build-%:

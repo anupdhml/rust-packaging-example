@@ -21,6 +21,15 @@ if [ -z "$TARGET" ]; then
   exit 1
 fi
 
+# get the full directory path where this script lives
+# via https://stackoverflow.com/a/246128
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+
+echo "Building rust builder image for target ${TARGET}, from ${SCRIPT_DIR}"
+
+# this move allows us to run this script from anywhere in the repo
+pushd "$SCRIPT_DIR" > /dev/null
+
 DOCKERFILE="Dockerfile.${TARGET}"
 if [ ! -f "$DOCKERFILE" ]; then
   echo "A Dockerfile does not exist for the specified target: ${TARGET}"
@@ -40,3 +49,6 @@ docker build \
   --build-arg RUST_VERSION=${RUST_VERSION} \
   -f ${DOCKERFILE} \
   .
+
+# back to the origin dir, just in case
+popd > /dev/null
