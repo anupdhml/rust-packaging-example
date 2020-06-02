@@ -4,3 +4,6 @@
 set -o errexit
 
 adduser --system --group --no-create-home --quiet rust
+
+mkdir -p /var/log/rust-packaging-example
+chown -R rust:rust /var/log/rust-packaging-example

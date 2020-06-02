@@ -35,16 +35,16 @@ allocator-jemalloc = ["jemallocator"]
 name = "rust-packaging-example"
 section = "rust"
 depends = "$auto"
-maintainer-scripts = "distribution/debian/scripts/"
+maintainer-scripts = "distribution/debian/maintainer-scripts/"
 assets = [
   # target path will be automatically corrected when cross-compiling
   ["target/release/rust-packaging-example", "usr/bin/", "755"],
   ["README.md", "usr/share/doc/rust-packaging-example/", "644"],
   ["LICENSE", "usr/share/doc/rust-packaging-example/", "644"],
   # need to specify each directory contents since only actual file entries are allowed here
-  ["distribution/etc/rust-pacakging-example/*", "/etc/rust-packaging-example/", "644"],
-  ["distribution/etc/rust-pacakging-example/config/*", "/etc/rust-packaging-example/config/", "644"],
-  ["distribution/etc/rust-pacakging-example/config/examples/*", "/etc/rust-packaging-example/config/examples/", "644"],
+  ["distribution/etc/rust-packaging-example/*", "/etc/rust-packaging-example/", "644"],
+  ["distribution/etc/rust-packaging-example/config/*", "/etc/rust-packaging-example/config/", "644"],
+  ["distribution/etc/rust-packaging-example/config/examples/*", "/etc/rust-packaging-example/config/examples/", "644"],
   ["distribution/etc/systemd/system/*", "/etc/systemd/system/", "644"],
 ]
 conf-files = [
