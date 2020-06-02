@@ -7,12 +7,11 @@ The main packaging functionality here is exposed via [run.sh](run.sh) script -- 
 For CI or local use, packaging is best done via the [project Makefile](../Makefile), which has convenient (make) targets defined for doing it against all the supported rustc targets as well as package formats (documented below too).
 
 ```bash
-# from project root
-make builder-images && make packages
+make builder-images && make packages # from project root
 ```
-Resulting artifacts will be available in the directory `packaging/out` (relative to project root).
+Resulting artifacts will be available in the directory `packaging/out` (relative to project root). Enjoy!
 
-Once we have the builder images successfuly pushed to [docker hub](https://hub.docker.com/r/anupdhml/example-builder-rust), just `make packages` will suffice (the images will be pulled in automatically as part of project build).
+Note: once we have the builder images successfuly pushed to [docker hub](https://hub.docker.com/r/anupdhml/example-builder-rust), just `make packages` will suffice (the images will be pulled in automatically as part of project build).
 
 ## Supported Targets
 
@@ -21,9 +20,9 @@ Once we have the builder images successfuly pushed to [docker hub](https://hub.d
 
 For the list of targets used during project release, please refer to the [project Makefile](../Makefile).
 
-## Supported Package Formats
+## Supported Formats
 
-* Archive ([tar.gz[(https://en.wikipedia.org/wiki/Tar_(computing)) for linux targets)
+* Archive ([tar.gz](https://en.wikipedia.org/wiki/Tar_(computing)) for linux targets)
 * [Debian package](https://www.debian.org/doc/debian-policy/ch-binary.html)
 
 For the list of formats used during project release (variable by target), please refer to the [project Makefile](../Makefile).
