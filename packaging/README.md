@@ -10,6 +10,9 @@ For CI or local use, packaging is best done via the [project Makefile](../Makefi
 
 ```bash
 make builder-images && make packages # from project root
+
+# or to package for a specific target only (across all release formats)
+make builder-image-x86_64-unknown-linux-gnu && make package-x86_64-unknown-linux-gnu
 ```
 
 Resulting artifacts will be available in the directory `packaging/out`, relative to project root. Enjoy!

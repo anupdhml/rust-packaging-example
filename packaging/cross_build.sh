@@ -52,7 +52,9 @@ if ! command -v cross > /dev/null 2>&1; then
 fi
 
 BUILD_ARGS=("--target" "$TARGET")
+
 CUSTOM_RUSTFLAGS=()
+RUSTC_TARGET_FEATURES=()
 
 if [ "$BUILD_MODE" == "release" ]; then
   BUILD_ARGS+=("--release")
@@ -64,6 +66,13 @@ if [ "$BUILD_MODE" == "release" ]; then
   # lands on a stable rust release, switch to using that
   echo "Ensuring release binaries are stripped..."
   CUSTOM_RUSTFLAGS+=("-C" "link-arg=-s")
+
+# enable if using simd-json
+#  echo "Ensuring simd-json compilation (targetting for CPU instructions it supports)..."
+#  RUSTC_TARGET_FEATURES+=("+avx" "+avx2" "+sse4.2")
+#else
+#  echo "Ensuring simd-json compilation (optimizing for the current CPU)..."
+#  CUSTOM_RUSTFLAGS+=("-C" "target-cpu=native")
 fi
 
 if [[ "$TARGET" == *"alpine-linux-musl"* ]]; then
@@ -72,7 +81,15 @@ if [[ "$TARGET" == *"alpine-linux-musl"* ]]; then
   # is the default rustc behavior for musl targets, but alpine disables it by
   # default (via patches to rust).
   echo "Ensuring static builds for alpine-linux-musl targets..."
-  CUSTOM_RUSTFLAGS+=("-C" "target-feature=+crt-static")
+  RUSTC_TARGET_FEATURES+=("+crt-static")
+fi
+
+# if RUSTC_TARGET_FEATURES is not empty, convert it to a comma-separated string
+# and append it to CUSTOM_RUSTFLAGS
+if [ ${#RUSTC_TARGET_FEATURES[@]} -ne 0 ]; then
+  # via https://stackoverflow.com/a/17841619
+  function join_by { local IFS="$1"; shift; echo "$*"; }
+  CUSTOM_RUSTFLAGS+=( "-C" "target-feature=$(join_by , "${RUSTC_TARGET_FEATURES[@]}")" )
 fi
 
 export RUSTFLAGS="${RUSTFLAGS} ${CUSTOM_RUSTFLAGS[@]}"

@@ -5,6 +5,17 @@ RELEASE_TARGETS := \
 	# TODO if we fix this, we don't need the alpine specifc target above for musl builds
 	#x86_64-unknown-linux-musl \
 
+# Please keep the RELEASE_FORMATS_* var here aligned with RELEASE_TARGETS.
+#
+# For x86_64, packaging built on top of glibc based binaries is our primary
+# means of distribution right now. Using musl targets here would give us
+# fully static binaries (for easier distribution), but we are seeing up to
+# 25% slowdown for some of our benchmarks with musl builds. So we stick with
+# gnu builds for now.
+RELEASE_FORMATS_x86_64-unknown-linux-gnu := archive,deb
+RELEASE_FORMATS_x86_64-alpine-linux-musl := archive
+#RELEASE_FORMATS_x86_64-unknown-linux-musl := archive
+
 help:
 	@echo "This makefile wraps the tasks:"
 	@echo "  image                - build the docker image"
@@ -14,6 +25,7 @@ help:
 	@echo "  builds               - build for all the release targets"
 	@echo "  archive-TARGET       - package release archive for the specified TARGET"
 	@echo "  archives             - package release archive for all the release targets"
+	@echo "  package-TARGET       - package (across applicable formats) for the specified TARGET"
 	@echo "  packages             - package (across applicable formats) for all the release targets"
 
 image:
@@ -44,14 +56,20 @@ archive-%: build-%
 archives:
 	make $(foreach target,$(RELEASE_TARGETS),archive-$(target))
 
-# package applicable formats for each release target
-packages: builds
-	@# For x86_64, packaging built on top of glibc based binaries is our primary
-	@# means of distribution right now. Using musl targets here would give us
-	@# fully static binaries (for easier distribution), but we are seeing up to
-	@# 25% slowdown for some of our benchmarks with musl builds. So we stick with
-	@# gnu builds for now.
+# eg: package-x86_64-unknown-linux-gnu
+package-%: build-%
 	@echo ""
-	./packaging/run.sh -f archive,deb x86_64-unknown-linux-gnu
-	@echo ""
-	./packaging/run.sh -f archive     x86_64-alpine-linux-musl
+
+	@# ensure that we have RELEASE_FORMATS_* var defined here for the provided target
+	@echo "Packaging for target: $*"
+	@RELEASE_FORMATS=$(RELEASE_FORMATS_$*); \
+		if [ -z "$${RELEASE_FORMATS}" ]; then \
+			echo "Error: Variable RELEASE_FORMATS_$* not set in the Makefile"; \
+			exit 1; \
+		fi
+
+	@# package applicable formats for the given release target
+	./packaging/run.sh -f $(RELEASE_FORMATS_$*) $*
+
+packages:
+	make $(foreach target,$(RELEASE_TARGETS),package-$(target))
