@@ -14,29 +14,26 @@ passthrough = [
 # dependencies like snmalloc do not build successfuly there currently. So we
 # bring our own images with all the setup done for working builds.
 #
-# For details on the image implementation, refer to the contents of builder directory.
+# For details on the image implementation, refer to the contents of
+# packaging/builder-images directory.
 
 [target.x86_64-unknown-linux-musl]
-#
-# has very old ubuntu and causes multiple build issues. stay away
-#image = "clux/muslrust:latest"
-#
-# has recent-ish ubuntu  but does not have static libs needed for final snmalloc
-# linking (libatomic and libstdc++)
-#image = "ekidd/rust-musl-builder:stable"
-#
 # has latest musl-cross-make (needed for snmalloc to compile)
 # fails currently on final linking even with modified snmalloc build script to
-# find static version of libatomic and libstdc++
+# find static version of libatomic and libstdc++. With clang as the c++ compiler,
+# but to keep this image simple, we don't use it for now.
+#
+# TODO check with snmalloc-rs folks to see if there's a way around the snmalloc
+# linking issues seen here.
 image = "anupdhml/example-builder-rust:x86_64-unknown-linux-musl"
 
 # cross here is expected to be installed via:
 #   cargo install --git https://github.com/anupdhml/cross.git --branch custom_target_fixes
 # has fixes for this custom target to work
 [target.x86_64-alpine-linux-musl]
-# TODO see if we can make this work without setting this
-xargo = false
-#xargo = true
+xargo = false # cross uses xargo for non-standard targets normally, but we don't want that here
+# the before-mentioned linking issues (with x86_64-unknown-linux-musl) don't occur here,
+# when using alpine's patched rustc (https://git.alpinelinux.org/aports/tree/community/rust).
 image = "anupdhml/example-builder-rust:x86_64-alpine-linux-musl"
 
 [target.x86_64-unknown-linux-gnu]

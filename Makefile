@@ -17,8 +17,8 @@ help:
 	@echo "  packages             - package (across applicable formats) for all the release targets"
 
 image:
-	# TODO
-	docker-compose build
+	@echo "TODO"
+	@#docker-compose build
 
 # eg: builder-image-x86_64-unknown-linux-gnu
 builder-image-%:

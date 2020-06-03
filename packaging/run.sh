@@ -7,14 +7,15 @@
 # Meant for use during the final release as part of CI, but can be used for
 # local testing/distribution too.
 #
-# Package version is auto-inferred from the project version specified in the
-# cargo manifest.
+# Notes:
+# * Package version is auto-inferred from the project version specified in the
+#   cargo manifest.
+# * Assumes that the target binary is already built (eg: via cross_build.sh or
+#   outside of it).
+# * For a list of supported formats, see SUPPORTED_FORMATS variable in the script.
 #
 # Usage: run.sh [-h] [-f FORMATS] TARGET
 #   Run `run.sh -h` for more help.
-#
-# Assumes that the target binary is already built (eg: via cross_build.sh or
-# outside of it).
 #
 # Examples:
 #   run.sh x86_64-unknown-linux-gnu                # produce packages for all supported formats
@@ -34,7 +35,7 @@ function print_help {
 Usage: ${0##*/} [-h] [-f FORMATS] TARGET
   -h         show this help
   -f FORMATS package format(s). Supported values: ${SUPPORTED_FORMATS}
-             To specify multiple formats, pass a comma-separated string.
+             To specify multiple formats, pass as a comma-separated string.
 EOF
 }
 

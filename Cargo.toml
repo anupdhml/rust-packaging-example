@@ -50,7 +50,6 @@ assets = [
 conf-files = [
   # these files won't be overwritten when the package is upgraded
   "/etc/rust-packaging-example/logger.yaml",
-  "/etc/rust-packaging-example/config/main.yaml",
 ]
 # TODO generate this automatically as part of deb packaging (from README intro)
 # and place in "extended-description-file"

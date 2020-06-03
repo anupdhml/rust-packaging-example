@@ -17,7 +17,7 @@ set -o pipefail
 
 TARGET=$1
 if [ -z "$TARGET" ]; then
-  echo "Usage: build_image.sh TARGET"
+  echo "Usage: ${0##*/} TARGET"
   exit 1
 fi
 
@@ -43,7 +43,6 @@ RUST_TOOLCHAIN_FILE="../../rust-toolchain"
 RUST_VERSION=$(<"$RUST_TOOLCHAIN_FILE")
 
 docker build \
-  --network host \
   -t "${IMAGE_NAMESPACE}/${IMAGE_NAME}:${TARGET}" \
   -t "${IMAGE_NAMESPACE}/${IMAGE_NAME}:${TARGET}-${RUST_VERSION}" \
   --build-arg RUST_VERSION=${RUST_VERSION} \

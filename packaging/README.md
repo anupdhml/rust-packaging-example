@@ -20,10 +20,10 @@ Note: once we have the builder images successfuly pushed to [docker hub](https:/
 * bash
 * git
 * cargo
-* docker (to build the builder-images only)
+* docker (to build the [builder-images](builder-images) only)
 * dpkg, ldd (optionally, to auto-infer dynamic lib dependencies during debian packaging, via [cargo-deb](https://github.com/mmstick/cargo-deb#installation))
 
-Tested successfully from linux (ubuntu) environments, but should work well as long as the above requirements are met.
+The setup here was tested successfully from linux (ubuntu) environments, but it should work well in other environments too, as long as the above requirements are met.
 
 ## Supported Targets
 
