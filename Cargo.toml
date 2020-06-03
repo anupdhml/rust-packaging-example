@@ -54,7 +54,7 @@ conf-files = [
 # TODO generate this automatically as part of deb packaging (from README intro)
 # and place in "extended-description-file"
 extended-description = """\
-Exploration project to determine how to package a rust application for final distribution
+Example project demonstrating how to package a rust application for final distribution.
 """
 
 # for use during rpm packaging, via cargo-rpm

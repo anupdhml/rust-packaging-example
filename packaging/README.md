@@ -11,9 +11,20 @@ For CI or local use, packaging is best done via the [project Makefile](../Makefi
 ```bash
 make builder-images && make packages # from project root
 ```
+
 Resulting artifacts will be available in the directory `packaging/out`, relative to project root. Enjoy!
 
 Note: once we have the builder images successfuly pushed to [docker hub](https://hub.docker.com/r/anupdhml/example-builder-rust), just `make packages` will suffice (the images will be pulled in automatically as part of project build).
+
+Other examples:
+
+```bash
+# produce packages of all supported formats (using glibc based binaries) for x86_64 linux
+./cross_build.sh x86_64-unknown-linux-gnu && ./run.sh x86_64-unknown-linux-gnu
+
+# produce archive (using musl based binaries) for x86_64 linux
+./cross_build.sh x86_64-alpine-linux-musl && ./run.sh -f archive x86_64-alpine-linux-musl
+```
 
 ### Requirements
 

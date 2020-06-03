@@ -9,8 +9,9 @@ set -o xtrace
 apt-get update
 
 apt-get install -y \
-  cmake        `# for building C deps` \
+  cmake        `# for building C deps`
   #libclang-dev `# for onig_sys (via the regex crate)` \
+  #libssl-dev   `# for openssl (via surf)`
 
 # cleanup
 echo apt-get autoremove -y \

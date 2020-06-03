@@ -11,7 +11,7 @@ RUN apk add --update-cache \
     # for onig_sys (via the regex crate)
     #clang \
     # for openssl (via surf). static package needed for the final linking
-    #openssl-dev openssl-libs-static \
+    #openssl-dev openssl-libs-static
 
 # install patched rust from edge, for the specified version
 ARG RUST_VERSION
