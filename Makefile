@@ -5,7 +5,7 @@ RELEASE_TARGETS := \
 	# TODO if we fix this, we don't need the alpine specifc target above for musl builds
 	#x86_64-unknown-linux-musl \
 
-# Please keep the RELEASE_FORMATS_* var here aligned with RELEASE_TARGETS.
+# Please keep the RELEASE_FORMATS_* vars here aligned with RELEASE_TARGETS.
 #
 # For x86_64, packaging built on top of glibc based binaries is our primary
 # means of distribution right now. Using musl targets here would give us

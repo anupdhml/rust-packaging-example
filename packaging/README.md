@@ -9,17 +9,18 @@ The main packaging functionality here is exposed via [run.sh](run.sh) -- please 
 For CI or local use, packaging is best done via the [project Makefile](../Makefile), which has convenient (make) targets defined for doing it against all the supported rustc targets as well as package formats.
 
 ```bash
-make builder-images && make packages # from project root
+make packages # from project root
+```
 
-# or to package for a specific target only (across all release formats)
-make builder-image-x86_64-unknown-linux-gnu && make package-x86_64-unknown-linux-gnu
+Or to package for a specific target only (across all release formats):
+
+```bash
+make package-x86_64-unknown-linux-gnu # from project root
 ```
 
 Resulting artifacts will be available in the directory `packaging/out`, relative to project root. Enjoy!
 
-Note: once we have the builder images successfuly pushed to [docker hub](https://hub.docker.com/r/anupdhml/example-builder-rust), just `make packages` will suffice (the images will be pulled in automatically as part of project build).
-
-Other examples:
+Other examples, using the scripts here directly:
 
 ```bash
 # produce packages of all supported formats (using glibc based binaries) for x86_64 linux
@@ -29,12 +30,14 @@ Other examples:
 ./cross_build.sh x86_64-alpine-linux-musl && ./run.sh -f archive x86_64-alpine-linux-musl
 ```
 
+If you need to build the docker images used during the cross build process, please refer to the documentation on [builder-images](./builder-images).
+
 ### Requirements
 
 * bash
 * git
 * cargo
-* docker (to build the [builder-images](builder-images) only)
+* docker
 * dpkg, ldd (optionally, to auto-infer dynamic lib dependencies during debian packaging, via [cargo-deb](https://github.com/mmstick/cargo-deb#installation))
 
 The setup here was tested successfully from linux (ubuntu) environments, but it should work well in other environments too, as long as the above requirements are met.
