@@ -69,24 +69,18 @@ if [ -z "$FORMATS" ]; then
   FORMATS="$SUPPORTED_FORMATS"
 fi
 
-if [ "$RUST_PACKAGING_EXAMPLE_MODE" = "debug" ]; then
-  BUILD_MODE=debug
-else
-  BUILD_MODE=release
-fi
-
 BIN_NAME="rust-packaging-example"
 
 ROOT_DIR="$(git rev-parse --show-toplevel)"
 
-echo "Packaging ${BIN_NAME} for target ${TARGET} (${BUILD_MODE}) in ${FORMATS} formats, from ${ROOT_DIR}"
+echo "Packaging ${BIN_NAME} for target ${TARGET} in ${FORMATS} formats, from ${ROOT_DIR}"
 
 # this move allows us to run this script from anywhere in the repo
 pushd "$ROOT_DIR" > /dev/null
 
 ###############################################################################
 
-TARGET_BUILD_DIR="${ROOT_DIR}/target/${TARGET}/${BUILD_MODE}"
+TARGET_BUILD_DIR="${ROOT_DIR}/target/${TARGET}/release" # we always package for release builds
 TARGET_BIN="$TARGET_BUILD_DIR/${BIN_NAME}"
 
 # assumes that the build's been done first
