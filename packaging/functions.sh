@@ -31,6 +31,7 @@ function package_archive {
   # support files
   cp -v "${ROOT_DIR}/README.md" "${ROOT_DIR}/LICENSE" "${temp_archive_dir}/"
   cp -vR "${ROOT_DIR}/packaging/distribution/etc/" "${temp_archive_dir}/"
+  cp -vR "${ROOT_DIR}/packaging/distribution/usr/" "${temp_archive_dir}/"
 
   echo "Creating archive file: ${archive_file}"
   tar cvzf $archive_file -C "$TARGET_BUILD_DIR" "$archive_name"

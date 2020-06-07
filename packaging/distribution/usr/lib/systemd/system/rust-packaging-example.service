@@ -1,6 +1,9 @@
 [Unit]
 Description=Rust Packaging Example
 Documentation=https://github.com/anupdhml/rust-packaging-example
+# good to enable for network apps
+#After=network-online.target
+#Requires=network-online.target
 
 [Service]
 User=rust
@@ -9,6 +12,7 @@ ExecStart=/usr/bin/rust-packaging-example
 Restart=on-failure
 # good to enable this if the app is always meant to be up
 #Restart=always
+SyslogIdentifier=rust-packaging-example
 
 [Install]
 WantedBy=multi-user.target

@@ -33,6 +33,7 @@ allocator-jemalloc = ["jemallocator"]
 # https://github.com/mmstick/cargo-deb#packagemetadatadeb-options
 [package.metadata.deb]
 name = "rust-packaging-example"
+# list of other sections at https://packages.debian.org/stable/
 section = "rust"
 depends = "$auto"
 maintainer-scripts = "distribution/debian/maintainer-scripts/"
@@ -45,7 +46,7 @@ assets = [
   ["packaging/distribution/etc/rust-packaging-example/*", "/etc/rust-packaging-example/", "644"],
   ["packaging/distribution/etc/rust-packaging-example/config/*", "/etc/rust-packaging-example/config/", "644"],
   ["packaging/distribution/etc/rust-packaging-example/config/examples/*", "/etc/rust-packaging-example/config/examples/", "644"],
-  ["packaging/distribution/etc/systemd/system/*", "/etc/systemd/system/", "644"],
+  ["packaging/distribution/usr/lib/systemd/system/*", "/usr/lib/systemd/system/", "644"],
 ]
 conf-files = [
   # these files won't be overwritten when the package is upgraded
@@ -79,5 +80,4 @@ rust-packaging-example = { path = "/usr/bin/rust-packaging-example" }
 "../README.md" = { path = "/usr/share/doc/rust-packaging-example/README.md" }
 "../LICENSE" = { path = "/usr/share/licenses/rust-packaging-example/LICENSE" }
 "../packaging/distribution/etc/rust-packaging-example/" = { path = "/etc/rust-packaging-example/" }
-# TODO move this to /usr/lib/systemd
-"../packaging/distribution/etc/systemd/system/rust-packaging-example.service" = { path = "/usr/lib/systemd/system/rust-packaging-example.service" }
+"../packaging/distribution/usr/lib/systemd/system/rust-packaging-example.service" = { path = "/usr/lib/systemd/system/rust-packaging-example.service" }
