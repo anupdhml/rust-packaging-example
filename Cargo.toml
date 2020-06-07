@@ -38,9 +38,9 @@ depends = "$auto"
 maintainer-scripts = "distribution/debian/maintainer-scripts/"
 assets = [
   # target path will be automatically corrected when cross-compiling
-  ["target/release/rust-packaging-example", "usr/bin/", "755"],
-  ["README.md", "usr/share/doc/rust-packaging-example/", "644"],
-  ["LICENSE", "usr/share/doc/rust-packaging-example/", "644"],
+  ["target/release/rust-packaging-example", "/usr/bin/", "755"],
+  ["README.md", "/usr/share/doc/rust-packaging-example/", "644"],
+  ["LICENSE", "/usr/share/doc/rust-packaging-example/", "644"],
   # need to specify each directory contents since only actual file entries are allowed here
   ["packaging/distribution/etc/rust-packaging-example/*", "/etc/rust-packaging-example/", "644"],
   ["packaging/distribution/etc/rust-packaging-example/config/*", "/etc/rust-packaging-example/config/", "644"],
@@ -58,9 +58,26 @@ Example project demonstrating how to package a rust application for final distri
 """
 
 # for use during rpm packaging, via cargo-rpm
-# https://github.com/iqlusioninc/cargo-rpm#
-# TODO decide whether we want to go with cargo-rpm
+# https://github.com/iqlusioninc/cargo-rpm
+[package.metadata.rpm]
+package = "rust-packaging-example"
+# TODO should be able to pass from cli?
+target_architecture = "x86_64"
 [package.metadata.rpm.cargo]
+# TODO work on --no-build option so that this is not needed
 buildflags = ["--release"]
+#profile = "release"
+# TODO should be able to pass from cli?
+target = "x86_64-unknown-linux-gnu"
 [package.metadata.rpm.targets]
 rust-packaging-example = { path = "/usr/bin/rust-packaging-example" }
+# if you add new files here, please make sure to add them to %files section in
+# the rpm spec file (inside .rpm) -- otherwise the rpm packaging will fail.
+# TODO would be nice if the LHS paths were relative to the project root and not
+# the rpm dir (.rpm)
+[package.metadata.rpm.files]
+"../README.md" = { path = "/usr/share/doc/rust-packaging-example/README.md" }
+"../LICENSE" = { path = "/usr/share/licenses/rust-packaging-example/LICENSE" }
+"../packaging/distribution/etc/rust-packaging-example/" = { path = "/etc/rust-packaging-example/" }
+# TODO move this to /usr/lib/systemd
+"../packaging/distribution/etc/systemd/system/rust-packaging-example.service" = { path = "/usr/lib/systemd/system/rust-packaging-example.service" }
