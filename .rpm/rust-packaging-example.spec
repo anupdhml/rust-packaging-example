@@ -56,12 +56,16 @@ cp -a * %{buildroot}
 rm -rf %{buildroot}
 
 %post
-# TODO reuse the postinst script from deb packaging here?
-#
-#adduser --system --group --no-create-home --quiet rust
-#
-#mkdir -p /var/log/rust-packaging-example
-#chown -R rust:rust /var/log/rust-packaging-example
+# keep the logic here in sync with the debian postinst script
+getent group rust >/dev/null || groupadd -r rust
+# TODO different home dir than / maybe
+getent passwd rust >/dev/null || \
+  useradd -r -g rust -d / -s /sbin/nologin \
+  -c "Rust Packaging Example" rust
+# create the log dir
+# TODO is this needed? can we do this from app?
+mkdir -p %{_localstatedir}/log/%{name}
+chown -R rust:rust %{_localstatedir}/log/%{name}
 %if 0%{?centos}
 %systemd_post rust-packaging-example.service
 %else
@@ -106,5 +110,3 @@ fi
 %config(noreplace) %{_sysconfdir}/%{name}/logger.yaml
 %config %{_sysconfdir}/%{name}/config/*
 %{_unitdir}/rust-packaging-example.service
-# TODO enable after %post is fully done
-#%dir %{_localstatedir}/log/%{name}/
