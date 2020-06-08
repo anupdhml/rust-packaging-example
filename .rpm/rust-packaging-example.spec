@@ -23,6 +23,15 @@ URL: https://github.com/anupdhml/rust-packaging-example
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 
+%if 0%{?centos}
+# ensures systemd_* macros are available for use in rpm scripts (as in %post)
+BuildRequires: systemd
+%endif
+
+# TODO include all the C-dependencies the binary has (currently based on the
+# x86_64-unknown-linux-gnu cargo target)
+Requires: glibc
+
 Requires(post): systemd
 Requires(preun): systemd
 Requires(postun): systemd
@@ -47,29 +56,55 @@ cp -a * %{buildroot}
 rm -rf %{buildroot}
 
 %post
+# TODO reuse the postinst script from deb packaging here?
+#
+#adduser --system --group --no-create-home --quiet rust
+#
+#mkdir -p /var/log/rust-packaging-example
+#chown -R rust:rust /var/log/rust-packaging-example
+%if 0%{?centos}
 %systemd_post rust-packaging-example.service
-# TODO reuse the postinst script from deb packaging here
+%else
+# contents of systemd_post macro from centos7.7
+if [ $1 -eq 1 ] ; then
+  # Initial installation
+  systemctl preset rust-packaging-example.service >/dev/null 2>&1 || :
+fi
+%endif
 
 %preun
+%if 0%{?centos}
 %systemd_preun rust-packaging-example.service
+%else
+# contents of systemd_preun macro from centos7.7
+if [ $1 -eq 0 ] ; then
+  # Package removal, not upgrade
+  systemctl --no-reload disable rust-packaging-example.service > /dev/null 2>&1 || :
+  systemctl stop %{?*} > /dev/null 2>&1 || :
+fi
+%endif
 
 %postun
+%if 0%{?centos}
 %systemd_postun_with_restart rust-packaging-example.service
+%else
+# contents of systemd_postun macro from centos7.7
+systemctl daemon-reload >/dev/null 2>&1 || :
+if [ $1 -ge 1 ] ; then
+  # Package upgrade, not uninstall
+  systemctl try-restart rust-packaging-example.service >/dev/null 2>&1 || :
+fi
+%endif
 
-# the dir macros used here should line up with path names that are part of
-# package.metadata.rpm.files configuration in the project's cargo manifest
 %files
 %defattr(-,root,root,-)
-
+# the dir macros used here should line up with path names that are part of
+# package.metadata.rpm.files configuration in the project's cargo manifest
 %{_bindir}/*
-
 %doc %{_datadir}/doc/%{name}/README.md
 %license %{_datadir}/licenses/%{name}/LICENSE
-
 %config(noreplace) %{_sysconfdir}/%{name}/logger.yaml
 %config %{_sysconfdir}/%{name}/config/*
-
 %{_unitdir}/rust-packaging-example.service
-
 # TODO enable after %post is fully done
 #%dir %{_localstatedir}/log/%{name}/
