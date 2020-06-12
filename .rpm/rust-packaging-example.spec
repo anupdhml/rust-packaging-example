@@ -1,6 +1,6 @@
 # RPM spec file meant for packaging via cargo-rpm
 #
-# initially generated with `cargo rpm init` and then modified for
+# initially generated with `cargo rpm init` and then (heavily) modified for
 # our use.
 
 %define __spec_install_post %{nil}
@@ -9,6 +9,8 @@
 
 # if the _unitdir macro is not defined, set it to the standard systemd unit path
 %{!?_unitdir: %define _unitdir /usr/lib/systemd/system}
+
+###############################################################################
 
 # the @@ strings here will be replaced with meaningful values when the build
 # is done via cargo-rpm
@@ -23,6 +25,8 @@ URL: https://github.com/anupdhml/rust-packaging-example
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 
+###############################################################################
+
 %if 0%{?centos}
 # ensures systemd_* macros are available for use in rpm scripts (as in %post)
 BuildRequires: systemd
@@ -31,10 +35,17 @@ BuildRequires: systemd
 # TODO include all the C-dependencies the binary has (currently based on the
 # x86_64-unknown-linux-gnu cargo target)
 Requires: glibc
+# for snmalloc
+Requires: libatomic
+
+# for user/group creation
+Requires(post): shadow-utils
 
 Requires(post): systemd
 Requires(preun): systemd
 Requires(postun): systemd
+
+###############################################################################
 
 %description
 %{summary}
@@ -55,17 +66,21 @@ cp -a * %{buildroot}
 %clean
 rm -rf %{buildroot}
 
+###############################################################################
+
 %post
-# keep the logic here in sync with the debian postinst script
+# create user/group for our use
+# please keep the logic here in sync with the debian postinst script
 getent group rust >/dev/null || groupadd -r rust
-# TODO different home dir than / maybe
 getent passwd rust >/dev/null || \
   useradd -r -g rust -d / -s /sbin/nologin \
   -c "Rust Packaging Example" rust
+
 # create the log dir
-# TODO is this needed? can we do this from app?
 mkdir -p %{_localstatedir}/log/%{name}
 chown -R rust:rust %{_localstatedir}/log/%{name}
+
+# systemd setup
 %if 0%{?centos}
 %systemd_post rust-packaging-example.service
 %else
@@ -75,6 +90,8 @@ if [ $1 -eq 1 ] ; then
   systemctl preset rust-packaging-example.service >/dev/null 2>&1 || :
 fi
 %endif
+
+###############################################################################
 
 %preun
 %if 0%{?centos}
@@ -100,13 +117,20 @@ if [ $1 -ge 1 ] ; then
 fi
 %endif
 
+###############################################################################
+
 %files
 %defattr(-,root,root,-)
+
 # the dir macros used here should line up with path names that are part of
 # package.metadata.rpm.files configuration in the project's cargo manifest
+
 %{_bindir}/*
+
 %doc %{_datadir}/doc/%{name}/README.md
 %license %{_datadir}/licenses/%{name}/LICENSE
+
 %config(noreplace) %{_sysconfdir}/%{name}/logger.yaml
 %config %{_sysconfdir}/%{name}/config/*
+
 %{_unitdir}/rust-packaging-example.service
