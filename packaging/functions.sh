@@ -9,8 +9,7 @@
 
 
 function package_archive {
-  # aligning the naming convention here with what cargo-deb uses for deb packages
-  local archive_name="${BIN_NAME}_${VERSION}_${TARGET}"
+  local archive_name="${BIN_NAME}-${VERSION}-${TARGET}"
   local archive_extension="tar.gz" # TODO support zip here once we package for windows too
   local archive_file="${PACKAGES_DIR}/${archive_name}.${archive_extension}"
 
@@ -34,19 +33,18 @@ function package_archive {
   cp -vR "${ROOT_DIR}/packaging/distribution/usr/" "${temp_archive_dir}/"
 
   echo "Creating archive file: ${archive_file}"
-  tar cvzf $archive_file -C "$TARGET_BUILD_DIR" "$archive_name"
+  tar czf $archive_file -C "$TARGET_BUILD_DIR" "$archive_name"
 
   # final cleanup
   rm -rf "$temp_archive_dir"
 
-  # for debugging
-  #
-  #echo "Package info:"
-  #echo "Archive size: $(du -hs "$archive_file" | awk '{print $1}')"
-  #gzip --list "$archive_file"
-  #
-  #echo "Package content:"
-  #tar --gzip --list --verbose --file="$archive_file"
+  # print package details
+  echo "PACKAGE SIZE:"
+  du --human-readable --summarize "$archive_file" | awk '{print $1}'
+  echo "PACKAGE INFO:"
+  gzip --list "$archive_file"
+  echo "PACKAGE CONTENTS:"
+  tar --gzip --list --verbose --file="$archive_file"
 
   echo "Successfully built the archive file: ${archive_file}"
 }
@@ -65,21 +63,60 @@ function package_deb {
   #local deb_file=$(cargo deb --no-build --no-strip --output "$PACKAGES_DIR" --deb-version "$VERSION" --target "$TARGET" | tail -n1)
   # we control stripping as part of the build process separately so don't do it here
   cargo deb --verbose --no-build --no-strip \
+    --target "$TARGET" \
     --output "$PACKAGES_DIR" \
-    --deb-version "$VERSION" \
-    --target "$TARGET"
+    --deb-version "$VERSION"
 
   # final cleanup. directory created by cargo-deb
-  rm -rfv "${ROOT_DIR}/target/${TARGET}/debian/"
+  rm -rf "${ROOT_DIR}/target/${TARGET}/debian/"
 
-  # for debugging
-  #
-  #echo "Package info:"
-  #dpkg --info "$deb_file"
-  #
-  #echo "Package contents:"
-  #dpkg --contents "$deb_file"
+  # print package details
+  local deb_file="${PACKAGES_DIR}/*.deb"
+  echo "PACKAGE SIZE:"
+  du --human-readable --summarize $deb_file | awk '{print $1}'
+  echo "PACKAGE INFO:"
+  dpkg --info $deb_file
+  echo "PACKAGE CONTENTS:"
+  dpkg --contents $deb_file
 
-  #echo "Successfully built the deb file: ${deb_file}"
-  echo "Successfully built the deb file"
+  echo "Successfully built the deb file: ${deb_file}"
+}
+
+
+function package_rpm {
+  local rpm_build_dir="${TARGET_BUILD_DIR}/rpmbuild"
+
+  # install cargo-rpm if not already there (helps us easily build a rpm package)
+  # https://github.com/iqlusioninc/cargo-rpm
+  #
+  # currently need to install it from a personal fork to get various cargo-rpm enhancements.
+  # once https://github.com/iqlusioninc/cargo-rpm/pulls/anupdhml are merged, install it from upstream.
+  if ! cargo rpm version > /dev/null 2>&1; then
+    echo "Installing cargo-rpm..."
+    cargo install --git https://github.com/anupdhml/cargo-rpm.git --branch custom_output_path
+  fi
+
+  echo "Creating rpm file in directory: ${PACKAGES_DIR}"
+  # TODO enable after target PR gets merged: https://github.com/iqlusioninc/cargo-rpm/pull/70
+  #cargo rpm build --verbose --no-cargo-build \
+  #  --target "$TARGET" \
+  #  --output "$PACKAGES_DIR"
+  cargo rpm build --verbose --no-cargo-build \
+    --output "$PACKAGES_DIR"
+
+  # final cleanup. directory created by cargo-rpm
+  rm -rf "$rpm_build_dir"
+
+  # print package details
+  local rpm_file="${PACKAGES_DIR}/*.rpm"
+  echo "PACKAGE SIZE:"
+  du --human-readable --summarize $rpm_file | awk '{print $1}'
+  echo "PACKAGE INFO:"
+  rpm --query --info --verbose --package $rpm_file
+  echo "PACKAGE REQUIREMENTS:"
+  rpm --query --requires --verbose --package $rpm_file
+  echo "PACKAGE CONTENTS:"
+  rpm --query --list --verbose --package $rpm_file
+
+  echo "Successfully built the rpm file: ${rpm_file}"
 }

@@ -62,13 +62,14 @@ Example project demonstrating how to package a rust application for final distri
 # https://github.com/iqlusioninc/cargo-rpm
 [package.metadata.rpm]
 package = "rust-packaging-example"
-# TODO should be able to pass from cli?
-target_architecture = "x86_64"
+# will infer from target when not specified here
+#target_architecture = "x86_64"
 [package.metadata.rpm.cargo]
-# TODO work on --no-build option so that this is not needed
+# useful when using cargo rpm itself to build the project (i.e. without the
+# --no-cargo-build flag from `cargo rpm build`)
 buildflags = ["--release"]
-#profile = "release"
-# TODO should be able to pass from cli?
+profile = "release"
+# TODO remove after target PR gets merged: https://github.com/iqlusioninc/cargo-rpm/pull/70
 target = "x86_64-unknown-linux-gnu"
 [package.metadata.rpm.targets]
 rust-packaging-example = { path = "/usr/bin/rust-packaging-example" }
