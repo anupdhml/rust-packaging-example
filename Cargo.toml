@@ -70,7 +70,7 @@ package = "rust-packaging-example"
 buildflags = ["--release"]
 profile = "release"
 # TODO remove after target PR gets merged: https://github.com/iqlusioninc/cargo-rpm/pull/70
-target = "x86_64-unknown-linux-gnu"
+#target = "x86_64-unknown-linux-gnu"
 [package.metadata.rpm.targets]
 rust-packaging-example = { path = "/usr/bin/rust-packaging-example" }
 # if you add new files here, please make sure to add them to %files section in

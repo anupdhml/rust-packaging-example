@@ -93,15 +93,12 @@ function package_rpm {
   # once https://github.com/iqlusioninc/cargo-rpm/pulls/anupdhml are merged, install it from upstream.
   if ! cargo rpm version > /dev/null 2>&1; then
     echo "Installing cargo-rpm..."
-    cargo install --git https://github.com/anupdhml/cargo-rpm.git --branch custom_output_path
+    cargo install --git https://github.com/anupdhml/cargo-rpm.git --branch target_updates
   fi
 
   echo "Creating rpm file in directory: ${PACKAGES_DIR}"
-  # TODO enable after target PR gets merged: https://github.com/iqlusioninc/cargo-rpm/pull/70
-  #cargo rpm build --verbose --no-cargo-build \
-  #  --target "$TARGET" \
-  #  --output "$PACKAGES_DIR"
   cargo rpm build --verbose --no-cargo-build \
+    --target "$TARGET" \
     --output "$PACKAGES_DIR"
 
   # final cleanup. directory created by cargo-rpm
