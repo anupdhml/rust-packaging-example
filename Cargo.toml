@@ -36,7 +36,7 @@ name = "rust-packaging-example"
 # list of other sections at https://packages.debian.org/stable/
 section = "rust"
 depends = "$auto"
-maintainer-scripts = "distribution/debian/maintainer-scripts/"
+maintainer-scripts = "packaging/distribution/debian/maintainer-scripts/"
 assets = [
   # target path will be automatically corrected when cross-compiling
   ["target/release/rust-packaging-example", "/usr/bin/", "755"],
@@ -46,7 +46,8 @@ assets = [
   ["packaging/distribution/etc/rust-packaging-example/*", "/etc/rust-packaging-example/", "644"],
   ["packaging/distribution/etc/rust-packaging-example/config/*", "/etc/rust-packaging-example/config/", "644"],
   ["packaging/distribution/etc/rust-packaging-example/config/examples/*", "/etc/rust-packaging-example/config/examples/", "644"],
-  ["packaging/distribution/usr/lib/systemd/system/*", "/usr/lib/systemd/system/", "644"],
+  # copying systemd service to standard location for debian packages
+  ["packaging/distribution/etc/systemd/system/*", "/lib/systemd/system", "644"],
 ]
 conf-files = [
   # these files won't be overwritten when the package is upgraded
@@ -76,4 +77,5 @@ rust-packaging-example = { path = "/usr/bin/rust-packaging-example" }
 "../README.md" = { path = "/usr/share/doc/rust-packaging-example/README.md" }
 "../LICENSE" = { path = "/usr/share/licenses/rust-packaging-example/LICENSE" }
 "../packaging/distribution/etc/rust-packaging-example/" = { path = "/etc/rust-packaging-example/" }
-"../packaging/distribution/usr/lib/systemd/system/rust-packaging-example.service" = { path = "/usr/lib/systemd/system/rust-packaging-example.service" }
+# copying systemd service to standard location for rpm packages
+"../packaging/distribution/etc/systemd/system/rust-packaging-example.service" = { path = "/usr/lib/systemd/system/rust-packaging-example.service" }
