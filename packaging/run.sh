@@ -95,7 +95,7 @@ echo "Found the target binary: ${TARGET_BIN}"
 # the regex match pattern here is the package version, which is true for most packages)
 VERSION=$(grep --max-count 1 '^version\s*=' Cargo.toml | cut --delimiter '=' -f2 | tr --delete ' ' | tr --delete '"' || true)
 #
-# accurate determination, but depends on remarshal which won't be availale by default
+# accurate determination, but depends on remarshal which won't be available by default
 #VERSION=$(remarshal -i Cargo.toml -of json | jq -r '.package.version')
 
 if [ -z "$VERSION" ]; then
