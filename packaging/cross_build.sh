@@ -52,7 +52,11 @@ if ! command -v cross > /dev/null 2>&1; then
   cargo install --git https://github.com/anupdhml/cross.git --branch custom_target_fixes
 fi
 
-BUILD_ARGS=("--target" "$TARGET")
+# locked flag is good for reproducible builds -- ensures that Cargo.lock is
+# always up-to-date (i.e. build will error out if it needs an update). This
+# also means it catches situations where we update versions in Cargo.toml
+# but forget to update Cargo.lock.
+BUILD_ARGS=("--target" "$TARGET" --locked)
 
 CUSTOM_RUSTFLAGS=()
 RUSTC_TARGET_FEATURES=()
