@@ -69,11 +69,11 @@ if [ -z "$FORMATS" ]; then
   FORMATS="$SUPPORTED_FORMATS"
 fi
 
-BIN_NAME="rust-packaging-example"
+PACKAGE_NAME="rust-packaging-example"
 
 ROOT_DIR="$(git rev-parse --show-toplevel)"
 
-echo "Packaging ${BIN_NAME} for target ${TARGET} in ${FORMATS} formats, from ${ROOT_DIR}"
+echo "Packaging ${PACKAGE_NAME} for target ${TARGET} in ${FORMATS} formats, from ${ROOT_DIR}"
 
 # this move allows us to run this script from anywhere in the repo
 pushd "$ROOT_DIR" > /dev/null
@@ -81,7 +81,7 @@ pushd "$ROOT_DIR" > /dev/null
 ###############################################################################
 
 TARGET_BUILD_DIR="${ROOT_DIR}/target/${TARGET}/release" # we always package for release builds
-TARGET_BIN="$TARGET_BUILD_DIR/${BIN_NAME}"
+TARGET_BIN="$TARGET_BUILD_DIR/${PACKAGE_NAME}"
 
 # assumes that the build's been done first
 if [ ! -f "$TARGET_BIN" ]; then
