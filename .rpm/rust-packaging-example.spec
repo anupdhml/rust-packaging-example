@@ -37,8 +37,8 @@ BuildRequires: systemd
 # (debian buster) which has glibc 2.28, so will probably need to try from older images
 # with older glibc.
 Requires: glibc >= 2.18
-# for snmalloc
 # TODO link to these statically?
+# via snmalloc
 Requires: libstdc++
 Requires: libatomic
 

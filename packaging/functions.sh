@@ -24,7 +24,7 @@ function package_archive {
   echo "Copying files to temporary archive directory: ${temp_archive_dir}"
 
   # main binary
-  mkdir -p "$temp_archive_dir/bin"
+  mkdir -p "${temp_archive_dir}/bin"
   cp -v "$TARGET_BIN" "${temp_archive_dir}/bin"
 
   # support files
