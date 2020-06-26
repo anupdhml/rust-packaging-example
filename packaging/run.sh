@@ -99,7 +99,7 @@ VERSION=$(grep --max-count 1 '^version\s*=' Cargo.toml | cut --delimiter '=' -f2
 #VERSION=$(remarshal -i Cargo.toml -of json | jq -r '.package.version')
 
 if [ -z "$VERSION" ]; then
-  echo "Error: empty package version. Check the project cargo manifest file."
+  echo "Could not determine package version. Check the project cargo manifest file."
   exit 1
 fi
 echo "Determined package version to be: ${VERSION}"

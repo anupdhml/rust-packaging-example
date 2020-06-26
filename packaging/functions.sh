@@ -85,6 +85,11 @@ function package_deb {
 function package_rpm {
   local rpm_build_dir="${TARGET_BUILD_DIR}/rpmbuild"
 
+  if ! rpmbuild --version > /dev/null 2>&1; then
+    echo "rpmbuild is not installed. Aborting..."
+    exit 1
+  fi
+
   # install cargo-rpm if not already there (helps us easily build a rpm package)
   # https://github.com/iqlusioninc/cargo-rpm
   #
