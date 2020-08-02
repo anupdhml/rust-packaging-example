@@ -64,21 +64,21 @@ version = "0.1.0"
 dependencies = [
  "jemallocator 0.3.2 (registry+https://github.com/rust-lang/crates.io-index)",
  "mimalloc 0.1.19 (registry+https://github.com/rust-lang/crates.io-index)",
- "snmalloc-rs 0.2.18 (git+https://github.com/anupdhml/snmalloc-rs?branch=custom_lib_path)",
+ "snmalloc-rs 0.2.18 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
 name = "snmalloc-rs"
 version = "0.2.18"
-source = "git+https://github.com/anupdhml/snmalloc-rs?branch=custom_lib_path#85d6ab750a7666eef37c95b28280a31c271e2482"
+source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
- "snmalloc-sys 0.2.18 (git+https://github.com/anupdhml/snmalloc-rs?branch=custom_lib_path)",
+ "snmalloc-sys 0.2.18 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
 name = "snmalloc-sys"
 version = "0.2.18"
-source = "git+https://github.com/anupdhml/snmalloc-rs?branch=custom_lib_path#85d6ab750a7666eef37c95b28280a31c271e2482"
+source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
  "cmake 0.1.44 (registry+https://github.com/rust-lang/crates.io-index)",
  "libc 0.2.74 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -93,5 +93,5 @@ dependencies = [
 "checksum libc 0.2.74 (registry+https://github.com/rust-lang/crates.io-index)" = "a2f02823cf78b754822df5f7f268fb59822e7296276d3e069d8e8cb26a14bd10"
 "checksum libmimalloc-sys 0.1.15 (registry+https://github.com/rust-lang/crates.io-index)" = "a27252ec1d0c4e0dd6142cbc572da50b363ab56fc334f7aa8fadf295b2e24e74"
 "checksum mimalloc 0.1.19 (registry+https://github.com/rust-lang/crates.io-index)" = "6c52de2069999f01bd26436564dbe7de3a87898feeb7a0d0ff9eb20a05bb7ca0"
-"checksum snmalloc-rs 0.2.18 (git+https://github.com/anupdhml/snmalloc-rs?branch=custom_lib_path)" = "<none>"
-"checksum snmalloc-sys 0.2.18 (git+https://github.com/anupdhml/snmalloc-rs?branch=custom_lib_path)" = "<none>"
+"checksum snmalloc-rs 0.2.18 (registry+https://github.com/rust-lang/crates.io-index)" = "a651e887d1394fb3924f2837f1925d3b8325fea4942dbe120708e82473597407"
+"checksum snmalloc-sys 0.2.18 (registry+https://github.com/rust-lang/crates.io-index)" = "9a7f8fe8c7394be405668284b05fddefaec59a90707ac30375fc0bfa65c51f59"

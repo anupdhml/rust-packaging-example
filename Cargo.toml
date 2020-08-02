@@ -12,9 +12,6 @@ repository = "https://github.com/anupdhml/rust-packaging-example"
 
 [dependencies]
 
-# un-comment for local testing
-#snmalloc-rs = { path = "snmalloc-rs", optional = true }
-#snmalloc-rs = { git = "https://github.com/SchrodingerZhu/snmalloc-rs.git" , optional = true }
 snmalloc-rs = { version = "0.2", optional = true }
 
 mimalloc = { version = "0.1", default-features = false, optional = true }
@@ -22,9 +19,13 @@ mimalloc = { version = "0.1", default-features = false, optional = true }
 jemallocator = { version = "0.3", optional = true }
 
 [patch.crates-io]
+# un-comment for local testing
+#snmalloc-rs = { path = "snmalloc-rs", optional = true }
+#
+#snmalloc-rs = { git = "https://github.com/SchrodingerZhu/snmalloc-rs.git" , optional = true }
+#
 # https://github.com/SchrodingerZhu/snmalloc-rs/compare/master...anupdhml:custom_lib_path
-# TODO ensure that we don't have to use snmalloc-rs from a personal fork
-snmalloc-rs = { git = "https://github.com/anupdhml/snmalloc-rs", branch = "custom_lib_path" }
+#snmalloc-rs = { git = "https://github.com/anupdhml/snmalloc-rs", branch = "custom_lib_path" }
 
 [features]
 default = ["allocator-snmalloc"]
