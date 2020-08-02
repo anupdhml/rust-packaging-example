@@ -21,6 +21,11 @@ mimalloc = { version = "0.1", default-features = false, optional = true }
 
 jemallocator = { version = "0.3", optional = true }
 
+[patch.crates-io]
+# https://github.com/SchrodingerZhu/snmalloc-rs/compare/master...anupdhml:custom_lib_path
+# TODO ensure that we don't have to use snmalloc-rs from a personal fork
+snmalloc-rs = { git = "https://github.com/anupdhml/snmalloc-rs", branch = "custom_lib_path" }
+
 [features]
 default = ["allocator-snmalloc"]
 #default = ["allocator-mimalloc"]
